@@ -5,7 +5,7 @@
 {% endif %}
 
 {% set courseName %}
-  {{programmeDetails.subject}} ({{programmeDetails.code}})<br>
+  {{programmeDetails | getCourseName}}</br>
   {{programmeDetails.summary}}
 {% endset %}
 

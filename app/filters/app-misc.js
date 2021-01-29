@@ -69,13 +69,6 @@ filters.getCourseName = (course) => {
   return `${course.subject} (${course.code})`
 }
 
-// Eg Full-time, QTS with PGCE
-filters.getCourseHint = (course) => {
-  let qualificationsString = (course.qualifications.length > 1) ? `${course.qualifications[0]} with ${course.qualifications[1]}` : course.qualifications[0]
-  return `${course.studyMode}, ${qualificationsString}`
-}
-
-
 // Map course names so in autocomplete we get the name with
 // a hint on a second line
 
@@ -83,8 +76,7 @@ filters.getCourseHint = (course) => {
 // Full-time, QTS with PGCE
 filters.getCourseNamesForAutocomplete = (courses) => {
   return courses.map(course => {
-    // return [`${course.subject} (${course.code}) | ${course.route}`, course.id]
-    return [`${filters.getCourseName(course)} | ${filters.getCourseHint(course)}`, course.id]
+    return [`${filters.getCourseName(course)} | ${course.summary}`, course.id]
   })
 }
 
