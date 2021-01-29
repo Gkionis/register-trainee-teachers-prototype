@@ -69,11 +69,18 @@ filters.getCourseName = (course) => {
   return `${course.subject} (${course.code})`
 }
 
-// Map course names so in autocomplete we get the name with
-// a hint on a second line
 
 // Biology (J482)
-// Full-time, QTS with PGCE
+filters.getCourseNamesForSelect = (courses) => {
+  return courses.map(course => {
+    return [`${filters.getCourseName(course)}`, course.id]
+  })
+}
+
+// Map course names so in autocomplete we get the name with
+// a hint on a second line
+// Biology (J482)
+// QTS with PGCE full-time
 filters.getCourseNamesForAutocomplete = (courses) => {
   return courses.map(course => {
     return [`${filters.getCourseName(course)} | ${course.summary}`, course.id]

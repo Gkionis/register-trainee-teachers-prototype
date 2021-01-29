@@ -81,17 +81,32 @@ module.exports = router => {
     else {
       // selectedCourse could be an id of a course or a radio that contains an autocomplete
       if (selectedCourse == "publish-course") {
+
+        // Default value from select (used by defualt for no-js)
         selectedCourse = _.get(data, 'record.selectedCourseAutocompleteTemp')
+
+        // Read the raw autocomplete value.
+        // We can’t read the autocomplete value from the select because the Publish autocomplete
+        // values include hints, so the correct option in the select doesn’t get chosen by the js.
+        // Instead we read the raw value of the autocomplete input itself and map that string back
+        // to the id of the course.
+        let selectedCourseRawAutocomplete = req.body._autocompleteRawValue_publishCourse
+        // Will only exist if js
+        if (selectedCourseRawAutocomplete){
+          selectedCourse = providerCourses.find(course => {
+            return `${course.subject} (${course.code})` == req.body._autocompleteRawValue_publishCourse
+          })?.id
+        }
       }
       // Assume everything else is a course id
-      courseIndex = providerCourses.findIndex(course => course.id == selectedCourse)
-      if (courseIndex < 0){
+      let courseIndex = (selectedCourse) ? providerCourses.findIndex(course => course.id == selectedCourse) : false
+      if (!courseIndex || courseIndex < 0){
         // Nothing found for current provider (something has gone wrong)
         console.log(`Provider course ${selectedCourse} not recognised`)
         res.redirect(`${recordPath}/programme-details/pick-course${referrer}`)
       }
       else {
-        // Copy over that provider's course data
+        // Copy over that provider’s course data
         record.programmeDetails = providerCourses[courseIndex]
         res.redirect(`${recordPath}/programme-details/confirm-publish-details${referrer}`)
       }

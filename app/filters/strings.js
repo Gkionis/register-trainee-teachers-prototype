@@ -14,6 +14,11 @@ filters.slugify = (input) => {
   else return string(input).slugify().toString();
 }
 
+// Split a string using a separator
+filters.split = (input, separator) => {
+return _.split(input, separator)
+}
+
 // Hyphen separate a string
 // This is a string => this-is-a-string
 filters.kebabCase = (string) => {

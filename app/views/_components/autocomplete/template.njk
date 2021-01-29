@@ -28,12 +28,13 @@
       selected: params.value == item
     }) %}
   {% endif %}
-  
 {% endfor %}
 
-{# This needs margin manually applied because the design system removes
- bottom margin from the last govuk-form-group in a div - which happens
-  for *each* autocomplete #}
+{# 
+This needs margin manually applied because the design system removes
+bottom margin from the last govuk-form-group in a div - which happens
+for *each* autocomplete 
+#}
 <div class="{{params.classes}} govuk-!-margin-bottom-6">
   {{ govukSelect({
     label: params.label,
@@ -69,10 +70,19 @@
   {% set width = data.width %}
 {% endif %} #}
 
+
+
 <script src="/public/javascripts/autocomplete.min.js"></script>
 <script>
 
-  var values = [{% for value in params.items %}"{{value}}",{% endfor %}];
+  // Support an alt set of values than the one provided by the select
+  // This is used where we want the autocomplete to have more advanced functionality
+  var values = false
+  {% if params.itemsAutocomplete %}
+    values = [{% for value in params.itemsAutocomplete %}
+      "{{ value[0] if value | isArray else value }}",
+      {% endfor %}]
+  {% endif %}
 
   var element = document.querySelector('#{{params.id}}');
   // id = '{{params.id}}--autocomplete';
@@ -80,6 +90,7 @@
   var showAllValues = ('{{params.showAllValues}}' == 'false') ? false : true;
   var autoSelect = ('{{params.autoSelect}}' == 'false') ? false : true;
   var minLength = ('{{params.minLength}}' == false) ? 0 : parseInt('{{params.minLength}}');
+  var rawName = '_autocompleteRawValue_{{params.id}}'
 
   // Conditional not used
   // confirmFunction = function(val) {
@@ -124,15 +135,14 @@
     showAllValues: showAllValues,
     autoselect: autoSelect,
     minLength: minLength,
-    // source: values,
+    ...(values ? { source: values } : {}), // conditionally pass values along
     defaultValue: defaultValue,
+    name: rawName,
     templates: {
       inputValue,
       suggestion}
 
   });
-    // onConfirm: confirmFunction
-
 
 </script>
 

@@ -53,7 +53,8 @@ defer to an id if one exists. #}
 {% set providerHasManyPublishCourses %}
 
   {# Create nested array to populate autocomplete #}
-  {% set courseNames = providerCourses | getCourseNamesForAutocomplete %}
+  {% set courseNamesSelect = providerCourses | getCourseNamesForSelect %}
+  {% set courseNamesAutocomplete = providerCourses | getCourseNamesForAutocomplete %}
 
   {% if record.programmeDetails.isPublishCourse | falsify %}
     {% set selectedCourseName = record.programmeDetails | getCourseName %}
@@ -71,7 +72,8 @@ defer to an id if one exists. #}
       autoSelect: false,
       showAllValues: true,
       name: "record[selectedCourseAutocompleteTemp]",
-      items: courseNames,
+      items: courseNamesSelect,
+      itemsAutocomplete: courseNamesAutocomplete,
       classes: "app-!-autocomplete--max-width-two-thirds",
       value: selectedCourseName if selectedCourse !="Other"
       }
