@@ -1,6 +1,5 @@
 {# Look up courses offered by the current provider for the selected route #}
-{# {% set providerCourses = record.route | getProviderCoursesForRoute %} #}
-{% set providerCourses = data.courses | getProviderCourses(record.route) %}
+{% set providerCourses = data.courses | getProviderCourses(record.provider, record.route) %}
 
 {# Do a little dance working out if something should be pre-selected.
 This is partly because we want this to work with seed-data too - and this page

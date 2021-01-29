@@ -1,12 +1,10 @@
-module.exports = [
+const allProviders = [
   "2Schools Consortium",
   "AA Teamworks West Yorkshire SCITT",
-  "Alban Federation",
   "Alban Federation",
   "Alliance for Learning SCITT",
   "Altius Alliance",
   "Anglia Ruskin University",
-  "ARK Teacher Training",
   "ARK Teacher Training",
   "Ashton on Mersey School SCITT",
   "Associated Merseyside Partnership SCITT",
@@ -74,7 +72,6 @@ module.exports = [
   "Gateshead Primary SCITT",
   "George Abbot SCITT",
   "George Spencer Academy SCITT",
-  "George Spencer Academy SCITT",
   "GLF Schools’ Teacher Training",
   "Gloucestershire Initial Teacher Education Partnership (GITEP)",
   "Goldsmiths, University of London",
@@ -84,7 +81,6 @@ module.exports = [
   "Haybridge Alliance SCITT",
   "Henry Maynard Training E17",
   "High Force Education (SCITT)",
-  "High Force Education SCITT",
   "Hillingdon SCITT",
   "Huddersfield Horizon SCITT",
   "Hull SCITT",
@@ -95,18 +91,15 @@ module.exports = [
   "Inspiring Leaders with Redhill Secondary Teacher Training",
   "Isle of Wight SCITT",
   "Jewish Teacher Training Partnership",
-  "Jewish Teacher Training Partnership",
   "Keele and North Staffordshire Teacher Education",
   "Keele University",
   "Kent and Medway Training",
   "King Edward’s Consortium",
-  "King’s College London (University of London)",
-  "Kingsbridge EIP SCITT",
   "Kingsbridge EIP SCITT",
   "Kingston University",
+  "King’s College London (University of London)",
   "Kirklees and Calderdale SCITT",
   "Lampton LWA SCITT",
-  "Landau Forte College Derby SCITT",
   "Landau Forte College Derby SCITT",
   "Leeds Beckett University",
   "Leeds SCITT",
@@ -130,7 +123,6 @@ module.exports = [
   "NELTA (North East London Teaching Alliance)",
   "Newman University",
   "Norfolk GTP Provider",
-  "Norfolk Teacher Training Centre",
   "Norfolk Teacher Training Centre",
   "North East Partnership SCITT (Physical Education)",
   "North Essex Teacher Training (NETT)",
@@ -197,7 +189,6 @@ module.exports = [
   "Teach East",
   "Teach Kent & Sussex",
   "Teach SouthEast",
-  "Teach SouthEast",
   "Teach@Salesian",
   "Teach@SJB",
   "Teaching London: LDBS SCITT",
@@ -251,7 +242,6 @@ module.exports = [
   "Titan Partnership Ltd",
   "TKAT SCITT",
   "Tudor Grange SCITT",
-  "Tudor Grange SCITT",
   "Two Mile Ash ITT Partnership",
   "UCL, University College London (University of London)",
   "University Campus Oldham",
@@ -299,11 +289,36 @@ module.exports = [
   "West Berkshire Training Partnership",
   "West Essex SCITT",
   "West Midlands Consortium",
-  "West Midlands Consortium",
   "Wildern Partnership",
-  "Wildern School",
   "Wildern School",
   "York St John University",
   "Yorkshire and Humber Teacher Training",
   "Yorkshire Wolds Teacher Training"
 ]
+
+const permProviders = [
+  "Coventry University",
+  "University of Buckingham",
+  "Leeds SCITT",
+  "Leeds Trinity University",
+  "Bournemouth Poole",
+  "Dorset Teacher Training Partnership",
+  "South Coast SCITT"
+]
+
+
+// Returns a smaller set of providers as the real set is too big
+const getSelectedProviders = () => {
+  // One in 10 providers
+  let reducedProviders = allProviders.filter((provider, index) => { 
+    return (index % 10 === 0)
+  })
+  
+  reducedProviders = reducedProviders.concat(permProviders).sort()
+  return [...reducedProviders] // Uniq
+}
+
+module.exports = {
+  allProviders,
+  selectedProviders: getSelectedProviders()
+}

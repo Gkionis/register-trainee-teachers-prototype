@@ -1,6 +1,7 @@
+const faker             = require('faker')
 const weighted = require('weighted')
 
-module.exports = faker => {
+module.exports = () => {
 
   const sexInteger = faker.helpers.randomize([0, 1])
 

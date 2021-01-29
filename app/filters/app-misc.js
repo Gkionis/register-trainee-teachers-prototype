@@ -64,15 +64,6 @@ filters.orReferrer = (url, referrer) => {
 }
 
 
-filters.routeHasPublishCourses = function(route=false){
-  if (!route) return false
-  const data = this.ctx.data
-  let allCourses = Object.assign({}, data.courses)
-  let courses = allCourses["University of Southampton"].courses
-  let filteredCourses = courses.filter(course => route == course.route)
-  return (filteredCourses.length > 0)
-}
-
 // eg Biology (J482)
 filters.getCourseName = (course) => {
   return `${course.subject} (${course.code})`

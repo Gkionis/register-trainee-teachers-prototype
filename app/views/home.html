@@ -47,7 +47,7 @@
 
     <h2 class="govuk-heading-m">Your 2020 to 2021 trainees</h2>
 
-    {% set records = data.records | filterDisabledTrainingRoutes %}
+    {% set records = data.providerRecords | filterByYear(data.currentYear)| filterDisabledTrainingRoutes %}
 
     {% macro statusCard(records, status) %}
       <a href="/records?filterStatus={{status}}" class="status-card status-card--{{status | lower | kebabCase }}">

@@ -16,7 +16,7 @@
     </div>
   {% endif %}
   <div class="app-application-card_col">
-    <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
+    <h3 class="govuk-heading-m govuk-!-margin-bottom-1">
       <a href="/record/{{ record.id }}" class="govuk-link govuk-link--no-visited-state">
         {% if record | hasName %}
           {% if query.sortOrder == "lastName" %}
@@ -33,11 +33,17 @@
         {% endif %}
       </a>
     </h3>
+    
     {% if record.trainingDetails.traineeId %}
       <p class="govuk-caption-m govuk-!-font-size-16 app-application-card__id govuk-!-margin-bottom-0">Trainee ID: {{record.trainingDetails.traineeId}}</p>
     {% endif %}
     {% if record.trn %}
       <p class="govuk-caption-m govuk-!-font-size-16 app-application-card__id govuk-!-margin-bottom-0">TRN: {{record.trn}}</p>
+    {% endif %}
+    {% if data.signedInProviders | length > 1 %}
+      <p class="govuk-caption-m govuk-!-font-size-16 app-application-card__id govuk-!-margin-bottom-0 govuk-!-margin-top-2">
+        {{ record.provider }}
+      </p>
     {% endif %}
   </div>
   <div class="app-application-card_col">

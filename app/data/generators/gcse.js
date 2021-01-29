@@ -1,7 +1,8 @@
+const faker   = require('faker')
 const weighted = require('weighted')
 const gcseData = require('../gcse')
 
-module.exports = (faker, isInternationalTrainee, simpleGcseGrades) => {
+module.exports = (isInternationalTrainee, simpleGcseGrades) => {
   let year = faker.date.between('1970', '2016')
   year = year.getFullYear()
 

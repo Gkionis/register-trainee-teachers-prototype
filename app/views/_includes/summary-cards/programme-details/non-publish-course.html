@@ -20,14 +20,14 @@
           visuallyHiddenText: "route"
         }
       ]
-    } if canAmend
+    } if canAmend and false
   } if record.status !="Draft",
   {
     key: {
       text: "Course details"
     },
     value: {
-      text: "Not a publish course"
+      text: "Details not on Publish"
     },
     actions: {
       items: [
@@ -38,7 +38,7 @@
         }
       ]
     } if canAmend
-  } if record.route | routeHasPublishCourses,
+  } if record | routeHasPublishCourses,
   {
     key: {
       text: "Subject"

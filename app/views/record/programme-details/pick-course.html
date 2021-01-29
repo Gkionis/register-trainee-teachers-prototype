@@ -1,8 +1,10 @@
 {% extends "_templates/_record-form.html" %}
 
-{% set pageHeading = "What course are they doing?" %}
-
-
+{% if data.courses | getProviderCourses(data.record.provider, data.record.route) | length < 10 %}
+  {% set pageHeading = "What course are they doing?" %}
+{% else %}
+  {% set pageHeading = "Are the course details stored on Publish?" %}
+{% endif %}
 
 {# {% set formAction = "./assessment-details/confirm" %} #}
 

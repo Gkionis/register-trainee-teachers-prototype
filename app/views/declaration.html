@@ -9,8 +9,16 @@
   <div class="govuk-grid-column-two-thirds-from-desktop">
     <h1 class="govuk-heading-l">{{pageHeading}}</h1>
     <p class="govuk-body">By using this service, you agree to share accurate information about your trainees. You also agree to take responsibility for informing trainees that you share their data with DfE to register them as trainees.</p>
+
+    {% set destionationUrl %}
+      {% if data.isHatModel %}
+        /select-provider?initialProvider=true
+      {% else %}
+        /home
+      {% endif %}
+    {% endset %}
     
-    <form action="/home" method="post">
+    <form action="{{destionationUrl}}" method="post">
       {{ govukCheckboxes({
         items: [
           {

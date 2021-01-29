@@ -10,7 +10,9 @@ faker.locale  = 'en_GB'
 const weighted = require('weighted')
 const moment  = require('moment')
 const _       = require('lodash')
-const providers = require('../app/data/providers')
+const providerData = require('../app/data/providers')
+const providers = providerData.selectedProviders
+
 const ittSubjects = require('../app/data/itt-subjects')
 
 const generateCourseDetails = require('../app/data/generators/course-details')
@@ -44,9 +46,9 @@ const generateFakeCourses = () => {
     let providerCourses = []
     let courseCount = generateCourseCount() // semi-random number of courses per provider
     
-    // hardcode lots courses for Southmampton
-    // A separate setting limits this later
-    if (provider == "University of Southampton") courseCount = 100
+    // Hardcode lots courses our default providers
+    // A separate setting limits this later so that we can quickly change the number of courses
+    if (provider == "Coventry University" || provider == "University of Buckingham") courseCount = 100
 
     for (var i = 0; i < courseCount; i++){
       providerCourses.push(generateCourseDetails({isPublishCourse: true}))

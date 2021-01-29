@@ -27,6 +27,12 @@ let allTrainingRoutes       = Object.values(trainingRoutes).map(route => route.n
 
 let courses                 = require('./courses.json')
 
+let providerData            = require('./providers.js')
+let providers               = providerData.selectedProviders
+let allProviders            = providerData.allProviders
+
+let currentYear             = 2020
+
 // =============================================================================
 // Settings - things that can be changed from /admin
 // =============================================================================
@@ -35,6 +41,19 @@ let settings = {}
 
 // Currently enabled routes
 settings.enabledTrainingRoutes = Object.values(trainingRoutes).filter(route => route.defaultEnabled == true).map(route => route.name).sort()
+
+// One of `blended-model` or `hat-model`
+settings.providerModel = "blended-model"
+
+// The providers the signed-in user belongs to
+settings.userProviders = [
+  "Coventry University",
+  "University of Buckingham"
+]
+
+// The ‘active’ provider for the current user if using hat model
+// Must be one of the ones in settings.userProviders
+settings.userActiveProvider = "Coventry University"
 
 // Enable timeline on records
 settings.includeTimeline = 'true'
@@ -88,16 +107,19 @@ module.exports = {
   awards,
   countries,
   courses,
+  currentYear,
   degreeOrganisations,
   degreeTypes,
   ethnicities,
   ittSubjects,
   nationalities,
   notPassedReasons,
+  providers,
+  allProviders,
   records,
   settings,
-  subjects,
   statuses,
+  subjects,
   trainingRoutes,
   publishRoutes,
   nonPublishRoutes,

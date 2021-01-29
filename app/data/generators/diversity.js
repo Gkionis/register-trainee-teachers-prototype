@@ -1,6 +1,7 @@
+const faker             = require('faker')
 const weighted = require('weighted')
 
-module.exports = faker => {
+module.exports = () => {
 
   // Equality and diversity
   const diversityQuestionnaireAnswered=faker.helpers.randomize(["true", "true", "false"])

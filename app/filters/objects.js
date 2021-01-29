@@ -139,24 +139,22 @@ filters.deleteBlankAttributes = (dictionary) => {
 }
 
 // Filter results for only those containing attribute and value
-filters.where = function (arr, attr, test) {
-  test = (_.isArray(test)) ? test : [test]
-  var result = arr.filter(function (item) {
-     return test.includes(item[attr]);
-  });
-  return result
-};
-
+filters.where = (arr, key, compare) => {
+  compare = [].concat(compare) // force to arr
+  let filtered = arr.filter(item => {
+    return compare.includes(item[key])
+  })
+  return filtered
+}
 
 // Remove items with a specified attribute and value
-filters.removeWhere = function (arr, attr, test) {
-  test = (_.isArray(test)) ? test : [test]
-  var result = arr.filter(function (item) {
-    return !test.includes(item[attr])
-  });
-  return result
-};
-
+filters.removeWhere = (arr, key, compare) => {
+  compare = [].concat(compare) // force to arr
+  let filtered = arr.filter(item => {
+    return !compare.includes(item[key])
+  })
+  return filtered
+}
 // -------------------------------------------------------------------
 // keep the following line to return your filters to the app
 // -------------------------------------------------------------------

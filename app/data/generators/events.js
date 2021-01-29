@@ -1,4 +1,6 @@
-module.exports = (faker, params) => {
+const faker             = require('faker')
+
+module.exports = (status) => {
   const events = { items: [] }
 
   const date = faker.helpers.randomize([
@@ -33,35 +35,35 @@ module.exports = (faker, params) => {
 
 
 
-if (params.status == 'Pending TRN'){
+if (status == 'Pending TRN'){
   addEvent("Trainee submitted for TRN")
 }
 
-if (params.status == 'TRN received'){
+if (status == 'TRN received'){
   addEvent("Trainee submitted for TRN")
   addEvent("TRN received")
 }
 
-if (params.status == 'QTS recommended'){
+if (status == 'QTS recommended'){
   addEvent("Trainee submitted for TRN")
   addEvent("TRN received")
   addEvent("Trainee recommended for QTS")
 }
 
-if (params.status == 'QTS awarded'){
+if (status == 'QTS awarded'){
   addEvent("Trainee submitted for TRN")
   addEvent("TRN received")
   addEvent("Trainee recommended for QTS")
   addEvent("QTS awarded")
 }
 
-if (params.status == 'Deferred'){
+if (status == 'Deferred'){
   addEvent("Trainee submitted for TRN")
   addEvent("TRN received")
   addEvent("Trainee deferred")
 }
 
-if (params.status == 'Withdrawn'){
+if (status == 'Withdrawn'){
   addEvent("Trainee submitted for TRN")
   addEvent("TRN received")
   addEvent("Trainee withdrawn")

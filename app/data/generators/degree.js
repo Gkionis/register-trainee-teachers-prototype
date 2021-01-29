@@ -1,7 +1,8 @@
+const faker   = require('faker')
 const weighted = require('weighted')
 const degreeData = require('../degree')
 
-module.exports = (faker, isInternationalTrainee) => {
+module.exports = (isInternationalTrainee) => {
   const item = (faker) => {
     const subject = faker.helpers.randomize(degreeData().subjects)
     const predicted = faker.random.boolean()

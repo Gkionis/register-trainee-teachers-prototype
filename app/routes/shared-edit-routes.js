@@ -34,16 +34,18 @@ module.exports = router => {
 
   router.get(['/:recordtype/:uuid/programme-details','/:recordtype/programme-details'], function (req, res) {
     const data = req.session.data
+    const record = data.record
     let recordPath = utils.getRecordPath(req)
     let referrer = utils.getReferrer(req.query.referrer)
-    let route = data.record?.route
-    let providerCourses = utils.getProviderCourses(data.courses, route, data)
 
-    // No courses for selected route
+    let route = data.record?.route
+    let providerCourses = utils.getProviderCourses(data.courses, record.provider, route, data)
+
+    // Some courses for selected route
     if (providerCourses.length) {
       res.redirect(`${recordPath}/programme-details/pick-course${referrer}`)
     }
-    // Some courses for selected route
+    // If no courses, go straight to programme details
     else {
       res.redirect(`${recordPath}/programme-details/details${referrer}`)
     }
@@ -57,7 +59,7 @@ module.exports = router => {
     let referrer = utils.getReferrer(req.query.referrer)
     let enabledRoutes = data.settings.enabledTrainingRoutes
     let route = record?.route
-    let providerCourses = utils.getProviderCourses(data.courses, route, data)
+    let providerCourses = utils.getProviderCourses(data.courses, record.provider, route, data)
     let selectedCourse = _.get(data, 'record.selectedCourseTemp')
 
     // User shouldn’t have been on this page, send them to details

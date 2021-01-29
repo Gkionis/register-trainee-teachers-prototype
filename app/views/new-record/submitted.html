@@ -2,8 +2,6 @@
 
 {% set pageHeading = "Record submitted" %}
 
-{# {% set formAction = "./save" %} #}
-
 {% set hideReturnLink = true %}
 {% set backLink = '/records' %}
 {% set backText = 'All records' %}
@@ -11,13 +9,10 @@
 {% block formContent %}
 
 {# For this one page, we no longer have record in session data, so have to look it up #}
-{% set recordArray = data.records | where("route", data.recordId) %}
-{% set record = recordArray[0] %}
+{% set record = data.records | getRecordById(data.submittedRecordId) or {} %}
 
 {% set panelTitleText %}
-
   Record submitted {{ ("for " + record.personalDetails.shortName) if record.personalDetails.shortName }}
-
 {% endset %}
 
 {{ govukPanel({

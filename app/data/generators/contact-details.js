@@ -1,4 +1,7 @@
-module.exports = (faker, personalDetails) => {
+const faker = require('faker')
+
+
+module.exports = (personalDetails) => {
   let address, internationalAddress = undefined
   let county = undefined // faker.address.county()
 

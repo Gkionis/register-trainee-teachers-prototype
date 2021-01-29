@@ -41,6 +41,7 @@ module.exports = router => {
     let filtersToClean = [
     'filterStatus',
     'filterCycle',
+    'filterUserProviders',
     'filterTrainingRoutes']
     filtersToClean.forEach(filter => query[filter] = cleanInputData(query[filter]))
 
@@ -49,12 +50,13 @@ module.exports = router => {
     let filters = { 
       status: query.filterStatus,
       cycle: query.filterCycle,
+      providers: query.filterUserProviders,
       trainingRoutes: query.filterTrainingRoutes,
       subject: query.filterSubject
     }
 
     // Todo: this could probably be simpler
-    const hasFilters = !!(filters.status) || !!(searchQuery) || !!(filters.subject && filters.subject != 'All subjects') || !!(filters.cycle) || !!(filters.trainingRoutes)
+    const hasFilters = !!(filters.status) || !!(searchQuery) || !!(filters.subject && filters.subject != 'All subjects') || !!(filters.cycle) || !!(filters.trainingRoutes) || !!(filters.providers)
 
     // Filter records using the filters provided
     let filteredRecords = utils.filterRecords(data.records, data, filters)
@@ -107,6 +109,25 @@ module.exports = router => {
             newQuery.filterCycle = filters.cycle.filter(a => a != cycle)
             return {
               text: cycle,
+              href: url.format({
+                pathname: '/records',
+                query: newQuery,
+              })
+            }
+          })
+        })
+      }
+
+      if (filters.providers) {
+        selectedFilters.categories.push({
+          heading: { text: 'Provider' },
+          items: filters.providers.map((provider) => {
+
+            let newQuery = Object.assign({}, query)
+            newQuery.filterUserProviders = filters.providers.filter(a => a != provider)
+
+            return {
+              text: provider,
               href: url.format({
                 pathname: '/records',
                 query: newQuery,
