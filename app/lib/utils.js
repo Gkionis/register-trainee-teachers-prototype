@@ -99,6 +99,33 @@ exports.requiresSection = (record, sectionName) => {
   return requiredSections.includes(sectionName)
 }
 
+// Sort by subject, including course code
+exports.sortPublishCourses = courses => {
+  let sorted = courses.sort((a, b) => {
+    let aString = `${a.subject} (${a.code})`
+    let bString = `${b.subject} (${b.code})`
+    return exports.sortAlphabetical(aString, bString)
+  })
+  return sorted
+}
+
+// Return courses run by the current provider
+// Todo: make this use the 'signed-in' provider once multiple providers is merged
+exports.getProviderCourses = function(courses, route=false, data=false){
+  // data = Object.assign({}, data || this.ctx.data)
+  data = data || this?.ctx?.data || false
+  if (!data) {
+    console.log("Error with getProviderCourses: data not provided")
+  }
+  let filteredCourses = courses["University of Southampton"].courses
+  if (route) {
+    filteredCourses = filteredCourses.filter(course => route == course.route)
+  }
+  let limitedCourses = filteredCourses.slice(0, data.settings.courseLimit)
+  let sortedCourses = exports.sortPublishCourses(limitedCourses)
+  return sortedCourses
+}
+
 // -------------------------------------------------------------------
 // Records
 // -------------------------------------------------------------------

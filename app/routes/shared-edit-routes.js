@@ -31,22 +31,21 @@ module.exports = router => {
 
   // Show pick-course or pick-route depending on if current provider has courses
   // on Publish
+
   router.get(['/:recordtype/:uuid/programme-details','/:recordtype/programme-details'], function (req, res) {
     const data = req.session.data
     let recordPath = utils.getRecordPath(req)
     let referrer = utils.getReferrer(req.query.referrer)
-    let providerCourses = data.courses["University of Southampton"].courses
-    // Filter routes we're not yet supporting
-    let filteredCourses = providerCourses.filter(course => {
-      return data.settings.enabledTrainingRoutes.includes(course.route)
-    })
-    let limitedCourses = filteredCourses.splice(0, data.settings.courseLimit)
+    let route = data.record?.route
+    let providerCourses = utils.getProviderCourses(data.courses, route, data)
 
-    if (limitedCourses.length) {
+    // No courses for selected route
+    if (providerCourses.length) {
       res.redirect(`${recordPath}/programme-details/pick-course${referrer}`)
     }
+    // Some courses for selected route
     else {
-      res.redirect(`${recordPath}/programme-details/pick-route${referrer}`)
+      res.redirect(`${recordPath}/programme-details/details${referrer}`)
     }
   })
 
@@ -57,21 +56,24 @@ module.exports = router => {
     let recordPath = utils.getRecordPath(req)
     let referrer = utils.getReferrer(req.query.referrer)
     let enabledRoutes = data.settings.enabledTrainingRoutes
-    // Todo: make this selection of providers dynamic
-    let providerCourses = data.courses["University of Southampton"].courses
+    let route = record?.route
+    let providerCourses = utils.getProviderCourses(data.courses, route, data)
     let selectedCourse = _.get(data, 'record.selectedCourseTemp')
 
+    // User shouldn’t have been on this page, send them to details
+    if (providerCourses.length == 0){
+      res.redirect(`${recordPath}/programme-details/details${referrer}`)
+    }
     // No data, return to page
-    if (!selectedCourse){
+    else if (!selectedCourse){
       res.redirect(`${recordPath}/programme-details/pick-course${referrer}`)
     }
     else if (selectedCourse == "Other"){
       if (_.get(record, 'programmeDetails.isPublishCourse')){
         // User has swapped from a publish to a non-publish course. Delete existing data
         delete record.programmeDetails
-        delete record.route
       }
-      res.redirect(`${recordPath}/programme-details/pick-route${referrer}`)
+      res.redirect(`${recordPath}/programme-details/details${referrer}`)
     }
 
     else {
@@ -105,7 +107,7 @@ module.exports = router => {
     let referrer = utils.getReferrer(req.query.referrer)
     let recordPath = utils.getRecordPath(req)
     // Copy route up to higher level
-    record.route = record.programmeDetails.route
+    // record.route = record.programmeDetails.route
     delete record.selectedCourseTemp
     delete record.selectedCourseAutocompleteTemp
 

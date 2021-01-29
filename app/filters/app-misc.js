@@ -63,28 +63,41 @@ filters.orReferrer = (url, referrer) => {
   }
 }
 
-// Sort by subject, including course code
-filters.sortPublishCourses = courses => {
-  let sorted = courses.sort((a, b) => {
-    let aString = `${a.subject} (${a.code})`
-    let bString = `${b.subject} (${b.code})`
-    return utils.sortAlphabetical(aString, bString)
-  })
-  return sorted
+
+filters.routeHasPublishCourses = function(route=false){
+  if (!route) return false
+  const data = this.ctx.data
+  let allCourses = Object.assign({}, data.courses)
+  let courses = allCourses["University of Southampton"].courses
+  let filteredCourses = courses.filter(course => route == course.route)
+  return (filteredCourses.length > 0)
 }
 
-// Map course names so in autocomplete we get:
-// Subject (code)
-// Route
+// eg Biology (J482)
+filters.getCourseName = (course) => {
+  return `${course.subject} (${course.code})`
+}
+
+// Eg Full-time, QTS with PGCE
+filters.getCourseHint = (course) => {
+  let qualificationsString = (course.qualifications.length > 1) ? `${course.qualifications[0]} with ${course.qualifications[1]}` : course.qualifications[0]
+  return `${course.studyMode}, ${qualificationsString}`
+}
+
+
+// Map course names so in autocomplete we get the name with
+// a hint on a second line
+
+// Biology (J482)
+// Full-time, QTS with PGCE
 filters.getCourseNamesForAutocomplete = (courses) => {
   return courses.map(course => {
     // return [`${course.subject} (${course.code}) | ${course.route}`, course.id]
-    return [`${course.subject} (${course.code})`, course.id]
+    return [`${filters.getCourseName(course)} | ${filters.getCourseHint(course)}`, course.id]
   })
 }
 
 // Return a pretty name for the degree
-
 filters.getDegreeName = (degree) => {
   if (!degree) return ''
 

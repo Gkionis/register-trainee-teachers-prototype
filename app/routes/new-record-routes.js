@@ -13,24 +13,34 @@ module.exports = router => {
     utils.deleteTempData(data)
     _.set(data, 'record', { status: 'Draft' })
     _.set(data, 'record.events.items', [])
-    res.redirect('/new-record/overview')
+    res.redirect('/new-record/select-route')
   })
 
   // Show error if route is not assessment only
-  router.post('/new-record/record-setup', function (req, res) {
+  router.post('/new-record/select-route-answer', function (req, res) {
     const data = req.session.data
-    let recordType = _.get(data, 'record.route') // Assessment only or not
+    let record = data.record
+    let route = record?.route
     let referrer = utils.getReferrer(req.query.referrer)
+    let existingProgrammeDetails = record?.programmeDetails
 
     // No data, return to page
-    if (!recordType){
-      res.redirect(`/new-record/record-setup${referrer}`)
+    if (!route){
+      res.redirect(`/new-record/select-route${referrer}`)
     }
     // Route not supported
-    else if (recordType == "Other") {
+    else if (route == "Other") {
       res.redirect(`/new-record/route-not-supported${referrer}`)
     }
     else {
+
+      // It’s possible for a user to pick a Publish course, then go back to change the
+      // route to one that doesn’t have publish courses. If they do this, we delete the
+      // programme details section
+      if (existingProgrammeDetails?.isPublishCourse && route != existingProgrammeDetails?.route){
+        delete record.programmeDetails
+      }
+      
       // Coming from the check answers page
       if (referrer){
         res.redirect(req.query.referrer)

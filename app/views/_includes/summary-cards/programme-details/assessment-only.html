@@ -7,10 +7,10 @@
 {% set programmeDetailsRows = [
   {
     key: {
-      text: "Type of course"
+      text: "Route"
     },
     value: {
-      text: record.route | safe or 'Not provided'
+      text: record.route or 'Not provided'
     },
     actions: {
       items: [
@@ -20,7 +20,7 @@
           visuallyHiddenText: "type of course"
         }
       ]
-    } if canAmend
+    } if canAmend and false
   },
   {
     key: {

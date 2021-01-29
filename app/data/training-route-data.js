@@ -81,7 +81,9 @@ Object.keys(trainingRoutes).sort().forEach(function(key) {
 trainingRoutes = orderedTrainingRoutes
 
 allocatedSubjects = [
-  "Physical education"
+  "Physical education",
+  "Primary with physical education",
+  "Sport and Physical Education"
 ]
 
 let enabledTrainingRoutes = Object.values(trainingRoutes).filter(route => route.defaultEnabled == true).map(route => route.name)
@@ -112,6 +114,24 @@ let levels = {
   }
 }
 
+let publishRoutes = [
+  'School direct salaried',
+  'School direct tuition fee',
+  'Apprenticeship PG',
+  'Provider-led'
+]
+
+let nonPublishRoutes = [
+  'Provider-led',
+  'Assessment only',
+  'Teach first PG',
+  // 'Early years - grad amp',
+  'Early years - grad entry',
+  // 'Early years - assessment only',
+  'Early years - undergraduate',
+  'Opt in undergraduate'
+]
+
 // remainingAgeRanges = [
 //   "0 to 5 programme", // 0.99%
 //   "5 to 14 programme", // 0.01%
@@ -137,5 +157,7 @@ module.exports = {
   allocatedSubjects,
   enabledTrainingRoutes,
   levels,
-  defaultSections
+  defaultSections,
+  publishRoutes,
+  nonPublishRoutes
 }

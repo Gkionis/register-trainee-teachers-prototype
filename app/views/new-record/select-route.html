@@ -1,0 +1,17 @@
+{% extends "_templates/_new-record.html" %}
+
+{% set pageHeading = "What route are they on?" %}
+
+{% set formAction = "./select-route-answer" | addReferrer(referrer) %}
+
+
+{% block formContent %}
+  {% include "_includes/forms/select-route.html" %}
+
+  {% if not record.recordType %}
+    {% set hideReturnLink = true %}
+  {% endif %}
+
+{% endblock %}
+
+

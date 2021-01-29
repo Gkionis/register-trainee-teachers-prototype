@@ -7,21 +7,38 @@
 {% set programmeDetailsRows = [
   {
     key: {
-      text: "Type of course"
+      text: "Route"
     },
     value: {
-      text: record.route | safe or 'Not provided'
+      text: record.route or 'Not provided'
+    },
+    actions: {
+      items: [
+        {
+          href: recordPath + "/select-route" | addReferrer(referrer),
+          text: "Change",
+          visuallyHiddenText: "route"
+        }
+      ]
+    } if canAmend
+  } if record.status !="Draft",
+  {
+    key: {
+      text: "Course details"
+    },
+    value: {
+      text: "Not a publish course"
     },
     actions: {
       items: [
         {
           href: recordPath + "/programme-details" | addReferrer(referrer),
           text: "Change",
-          visuallyHiddenText: "type of course"
+          visuallyHiddenText: "course details"
         }
       ]
     } if canAmend
-  },
+  } if record.route | routeHasPublishCourses,
   {
     key: {
       text: "Subject"
@@ -107,19 +124,14 @@
       ]
     } if canAmend
   } if record | hasAllocatedPlaces
-  ] %}
-
-
+  ] 
+%}
 
 {% set programmeDetailsHtml %}
   {{ govukSummaryList({
     rows: programmeDetailsRows
   }) }}
 {% endset %}
-
-
-
-
 
 {% set complete = true if (record.programmeDetails | sectionIsCompleted ) %}
 {% set status  = record.programmeDetails | getStatusText %}

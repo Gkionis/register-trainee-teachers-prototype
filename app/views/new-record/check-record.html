@@ -37,19 +37,28 @@
     <span class="govuk-caption-l">{{'Draft record' + draftRecordName}}</span>
     <h1 class="govuk-heading-l govuk-!-margin-bottom-8">{{pageHeading}}</h1>
 
-    {% if recordIsComplete %}
-      {# <p class="govuk-body-l">
-        You have completed all sections of the trainee's record. Check that the information is correct before submitting for TRN registration.
-      </p> #}
-      {% else %}
+    {# Show a warning if the record isn’t ready to be submitted #}
+    {% if not recordIsComplete %}
       {% set insetTextHtml %}
         <p class="govuk-body">This record is not complete and cannot be submitted for TRN. If you do not have all the required information now, you can <a href="./save-as-draft" class="govuk-link">save as a draft record</a>.</p>
       {% endset %}
         {{ govukInsetText({
           html: insetTextHtml
         }) }}
-
     {% endif %}
+
+
+    {% set routeTextHtml %}
+      {% if record.route %}
+        <p class="govuk-body">Trainee on the <a href="{{ './select-route' | addReferrer(referrer) }}" class="govuk-link">{{ record.route | lower }}</a> route.</p>
+      {% else %}
+        {# We should always have a route - but just in case show a link to set it #}
+        <p class="govuk-body"><a href="{{ './select-route' | addReferrer(referrer) }}" class="govuk-link">Route needs to be set.</a></p>
+      {% endif %}
+    {% endset %}
+    {{ govukInsetText({
+      html: routeTextHtml
+    }) }}
 
   </div>
 </div>

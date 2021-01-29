@@ -5,10 +5,12 @@
 {% set hideReturnLink = true %}
 {% set backLink = '/records' %}
 {% set backText = "All records" %}
-{% set referrer = recordPath + "/overview" %}
 
 
 {% block formContent %}
+
+{% set referrer = recordPath + "/overview" %}
+
 
 {% set draftRecordName %}
   {% if record.personalDetails.shortName %}
@@ -19,7 +21,17 @@
 <span class="govuk-caption-l">{{'Draft record' + draftRecordName}}</span>
 <h1 class="govuk-heading-l govuk-!-margin-bottom-8">{{pageHeading}}</h1>
 
-
+{% set routeTextHtml %}
+  {% if record.route %}
+    <p class="govuk-body">Trainee on the <a href="{{ './select-route' | addReferrer(referrer) }}" class="govuk-link">{{ record.route | lower }}</a> route.</p>
+  {% else %}
+    {# We should always have a route - but just in case show a link to set it #}
+    <p class="govuk-body"><a href="{{ './select-route' | addReferrer(referrer) }}" class="govuk-link">Route needs to be set.</a></p>
+  {% endif %}
+{% endset %}
+{{ govukInsetText({
+  html: routeTextHtml
+}) }}
 
 <h2 class="govuk-heading-m">Personal details and education</h2>
 {{ appTaskList({

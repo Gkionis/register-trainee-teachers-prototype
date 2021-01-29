@@ -84,9 +84,9 @@ module.exports = (params) => {
   let level, qualifications, summary, studyMode
 
   if (route.includes('Early years')){
-    level = 'primary'
+    level = 'Primary'
   }
-  else level = faker.helpers.randomize(['primary', 'secondary'])
+  else level = faker.helpers.randomize(['Primary', 'Secondary'])
 
   const ageRange = faker.helpers.randomize(trainingRouteData.levels[level].ageRanges)
 

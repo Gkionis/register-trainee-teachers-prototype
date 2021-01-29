@@ -1,37 +1,29 @@
-{# <h1 class="govuk-heading-l">{{pageHeading}}</h1> #}
+{# Look up courses offered by the current provider for the selected route #}
+{# {% set providerCourses = record.route | getProviderCoursesForRoute %} #}
+{% set providerCourses = data.courses | getProviderCourses(record.route) %}
 
-{# Todo: should the filtered data be passed to this view instead? #}
-{% set providerCourses = data.courses["University of Southampton"].courses %}
-
-{# Filter out routes that aren't enabled yet #}
-{% set providerCourses = providerCourses | where("route", data.settings.enabledTrainingRoutes)   %}
-
-{# Artificially truncate number of courses to test different scenarios #}
-{% set providerCourses = providerCourses | limitTo(data.settings.courseLimit)  %}
-
-{# Sort by subject and code #}
-{% set providerCourses = providerCourses | sortPublishCourses  %}
-
-{# Pull out the right thing so we can pre-select the right options #}
+{# Do a little dance working out if something should be pre-selected.
+This is partly because we want this to work with seed-data too - and this page
+has two possible UIs depending on how many courses a provider has. Thus we
+defer to an id if one exists. #}
 {% if record.programmeDetails.isPublishCourse | falsify %}
   {% set selectedCourse = record.programmeDetails.id %}
-{% elseif record.route %}
+{% elseif record.programmeDetails %}
   {% set selectedCourse = 'Other' %}
 {% endif %}
 
-
-{# Show all courses as radios #}
+{# If a provider has only a couple courses, we show each as a radio #}
 {% set providerHasFewPublishCourses %}
 
   {% set courseItems = [] %}
 
   {% for course in providerCourses %}
     {% set courseItems = courseItems | push({
-      text: course.subject + " (" + course.code + ")",
+      text: course | getCourseName,
       value: course.id,
       checked: checked(selectedCourse, course.id),
       hint: {
-        text: course.route
+        text: course | getCourseHint
       }
     }) %}
   {% endfor %}
@@ -58,25 +50,23 @@
 
 {% endset %}
 
-
-{# Lots of courses - show them in an autocomplete instead #}
+{# If a provider has lots of courses to show, we use an autocomplete #}
 {% set providerHasManyPublishCourses %}
 
-  {% set courseItems = [] %}
-
-  {# Remap names so route is a hint, and course ID is what gets stored #}
+  {# Create nested array to populate autocomplete #}
   {% set courseNames = providerCourses | getCourseNamesForAutocomplete %}
 
   {% if record.programmeDetails.isPublishCourse | falsify %}
-    {% set selectedCourse -%}
-      {{- record.programmeDetails.subject}} ({{record.programmeDetails.code}})
-    {%- endset %}
+    {% set selectedCourseName = record.programmeDetails | getCourseName %}
   {% endif %}
 
   {% set courseAutocompleteHtml %}
     {{ appAutocomplete({
       label: {
-        text: "Select the course"
+        text: "Select course"
+      },
+      hint: {
+        text: 'Search by subject or course code'
       },
       id: 'publishCourse',
       autoSelect: false,
@@ -84,69 +74,32 @@
       name: "record[selectedCourseAutocompleteTemp]",
       items: courseNames,
       classes: "app-!-autocomplete--max-width-two-thirds",
-      value: selectedCourse
+      value: selectedCourseName if selectedCourse !="Other"
       }
     ) }}
   {% endset %}
 
-  {# Todo: make sure this is checked if selectedCourse is an id #}
   {% set isPublishCourse = true if (selectedCourse == 'publish-course') or record.programmeDetails.isPublishCourse | falsify %}
 
-  {% set publishRadioText %}
-    {% if data.settings.enabledTrainingRoutes | length < 3 %}
-      A provider-led course on Publish
-    {% else %}
-      A course on Publish
-    {% endif %}
-  {% endset %}
+  {% set courseItems = [] %}
   
   {% set courseItems = courseItems | push({
     value: 'publish-course',
-    text: publishRadioText,
+    text: "Yes, it’s a course on Publish",
     conditional: {
       html: courseAutocompleteHtml
     },
     checked: isPublishCourse
   }) %}
 
-  {# {% set courseItems = courseItems | push({divider: 'or'}) %} #}
-
-{#   {% for route in data.settings.enabledTrainingRoutes %}
-    {% if route == 'Assessment only' %}
-      Singluar because publish doesn’t have assessment only courses
-      {% set labelText = "An assessment only course" %}
-    {% else %}
-      'Another' because most should already be listed in publish
-      {% set labelText = "Another " + (route | lower) + " course" %}
-      {% set courseItems = courseItems | push({
-        value: route,
-        text: labelText,
-        checked: checked(selectedCourse, route)
-      }) %}
-    {% endif %}
-
-    
-  {% endfor %} #}
-
-  {# {% set courseItems = courseItems | push({divider: 'or'}) %} #}
-
   {% set courseItems = courseItems | push({
     value: 'Other',
-    text: "Another course" if (data.settings.enabledTrainingRoutes | length < 3) else 'A course not on Publish'
+    text: "No, it’s not on Publish",
+    checked: true if (selectedCourse == 'Other' or data.record.selectedCourseTemp == "Other"),
+    hint: {
+      text: "Enter course details manually"
+    }
   }) %}
-
-  {# Treat assessment only separately because we want it last #}
-  {# {% set courseItems = courseItems | push({
-    value: 'Assessment only',
-    text: "An assessment only course",
-    checked: checked(selectedCourse, "Assessment only")
-  }) %} #}
-
-  {# {% set courseItems = courseItems | push({divider: 'or'}) %} #}
-  {# {% set courseItems = courseItems | push({
-    value: "Other",
-    text: "Another type of course"
-  }) %} #}
 
   {{ govukRadios({
     fieldset: {
@@ -160,34 +113,20 @@
   } | decorateAttributes(record, "record.selectedCourseTemp")) }}
 {% endset %}
 
+{% if providerCourses | length == 0 %}
 
-
-
-{% if providerHasPublishCourses == false %}
-
-  {{ providerWithNoPublishCourses | safe }}
+  <h1 class="govuk-heading-l">No courses found</h1>
+  <p class="govuk-body">You shouldn’t be seeing this page</p>
 
 {% elseif providerCourses | length < 10 %}
   
   {{ providerHasFewPublishCourses | safe }}
 
 {% else %}
+
   {{ providerHasManyPublishCourses | safe }}
 
 {% endif %}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 {{ govukButton({
   text: "Continue"
